@@ -3,26 +3,33 @@ console.log("Content script loaded");
 let searchOverlay = null;
 let selectedIndex = -1;
 
+// 添加一个函数来重置状态
+function resetState() {
+  searchOverlay = null;
+  selectedIndex = -1;
+}
+
+// 修改 createBookmarkSearch 函数
 function createBookmarkSearch() {
+  // 如果 searchOverlay 已存在，先移除它
   if (searchOverlay) {
-    console.log("Search overlay already exists");
-    return;
+    closeBookmarkSearch();
   }
 
   console.log("Creating bookmark search overlay");
 
   searchOverlay = document.createElement('div');
-  searchOverlay.id = 'bookmark-search-overlay';
+  searchOverlay.className = '__bookmark__launcher__overlay__';
   searchOverlay.innerHTML = `
-    <div id="bookmark-search-container">
-      <input type="text" id="search-input" placeholder="Search bookmarks...">
-      <ul id="results-list"></ul>
+    <div class="__bookmark__launcher__container__">
+      <input type="text" class="__bookmark__launcher__search__input__" placeholder="Search bookmarks...">
+      <ul class="__bookmark__launcher__results__list__"></ul>
     </div>
   `;
   document.body.appendChild(searchOverlay);
 
-  const searchInput = document.getElementById('search-input');
-  const resultsList = document.getElementById('results-list');
+  const searchInput = searchOverlay.querySelector('.__bookmark__launcher__search__input__');
+  const resultsList = searchOverlay.querySelector('.__bookmark__launcher__results__list__');
 
   searchInput.focus();
 
@@ -54,7 +61,7 @@ function createBookmarkSearch() {
       case 'Enter':
         e.preventDefault();
         if (selectedIndex >= 0 && selectedIndex < resultsCount) {
-          const selectedUrl = results[selectedIndex].querySelector('.url').textContent;
+          const selectedUrl = results[selectedIndex].querySelector('.__bookmark__launcher__url__').textContent;
           chrome.runtime.sendMessage({ action: "openInNewTab", url: selectedUrl });
           closeBookmarkSearch();
         }
@@ -77,20 +84,31 @@ function createBookmarkSearch() {
   });
 }
 
+// 修改 closeBookmarkSearch 函数
+function closeBookmarkSearch() {
+  console.log("Closing bookmark search overlay");
+  if (searchOverlay && searchOverlay.parentNode) {
+    searchOverlay.parentNode.removeChild(searchOverlay);
+  }
+  resetState();
+  chrome.runtime.sendMessage({ action: "searchClosed" });
+}
+
 function displayResults(results, query) {
-  const resultsList = document.getElementById('results-list');
+  const resultsList = searchOverlay.querySelector('.__bookmark__launcher__results__list__');
   resultsList.innerHTML = '';
   if (results.length === 0) {
-    resultsList.innerHTML = '<li class="no-results">No results found</li>';
+    resultsList.innerHTML = '<li class="__bookmark__launcher__no__results__">No results found</li>';
     return;
   }
 
   results.forEach(function (bookmark, index) {
     if (bookmark.url) {
       const li = document.createElement('li');
+      li.className = '__bookmark__launcher__result__item__';
       li.innerHTML = `
-        <div class="title">${highlightMatch(bookmark.title, query)}</div>
-        <div class="url">${highlightMatch(bookmark.url, query)}</div>
+        <div class="__bookmark__launcher__title__">${highlightMatch(bookmark.title, query)}</div>
+        <div class="__bookmark__launcher__url__">${highlightMatch(bookmark.url, query)}</div>
       `;
       li.addEventListener('click', function () {
         chrome.runtime.sendMessage({ action: "openInNewTab", url: bookmark.url });
@@ -106,13 +124,13 @@ function displayResults(results, query) {
 }
 
 function updateSelection() {
-  const results = document.querySelectorAll('#results-list li:not(.no-results)');
+  const results = searchOverlay.querySelectorAll('.__bookmark__launcher__result__item__');
   results.forEach((result, index) => {
     if (index === selectedIndex) {
-      result.classList.add('selected');
+      result.classList.add('__bookmark__launcher__selected__');
       result.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
     } else {
-      result.classList.remove('selected');
+      result.classList.remove('__bookmark__launcher__selected__');
     }
   });
 }
@@ -123,16 +141,7 @@ function highlightMatch(text, query) {
   return text.replace(regex, '<strong>$1</strong>');
 }
 
-function closeBookmarkSearch() {
-  console.log("Closing bookmark search overlay");
-  if (searchOverlay) {
-    document.body.removeChild(searchOverlay);
-    searchOverlay = null;
-    selectedIndex = -1;
-    chrome.runtime.sendMessage({ action: "searchClosed" });
-  }
-}
-
+// 修改消息监听器
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   console.log("Message received in content script:", request);
   if (request.action === "openBookmarkSearch") {
@@ -143,5 +152,8 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     sendResponse({ exists: !!searchOverlay });
   }
 });
+
+// 在页面加载时重置状态
+resetState();
 
 console.log("Content script setup complete");

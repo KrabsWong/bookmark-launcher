@@ -1,4 +1,4 @@
-#bookmark-search-overlay {
+.__bookmark__launcher__overlay__ {
   position: fixed;
   top: 0;
   left: 0;
@@ -8,72 +8,79 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 9999;
+  z-index: 2147483647;
+  font-family: Arial, sans-serif;
 }
 
-#bookmark-search-container {
-  background-color: white;
+.__bookmark__launcher__container__ {
+  background-color: #ffffff;
   padding: 20px;
   border-radius: 8px;
   width: 400px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   position: relative;
-  z-index: 10000;
+  z-index: 2147483647;
 }
 
-#search-input {
+.__bookmark__launcher__search__input__ {
   width: 100%;
   padding: 10px;
   margin-bottom: 15px;
-  border: 1px solid #ccc;
+  border: 1px solid #cccccc;
   border-radius: 4px;
   font-size: 16px;
-  box-sizing: border-box; /* 添加这一行 */
+  box-sizing: border-box;
+  outline: none;
 }
 
-#results-list {
+.__bookmark__launcher__results__list__ {
   list-style-type: none;
   padding: 0;
   margin: 0;
-  max-height: 300px; /* 限制结果列表的最大高度 */
+  max-height: 300px;
   overflow-y: auto;
 }
 
-#results-list li {
+.__bookmark__launcher__result__item__ {
   padding: 10px;
   cursor: pointer;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #eeeeee;
+  text-align: left;
 }
 
-#results-list li:last-child {
+.__bookmark__launcher__result__item__:last-child {
   border-bottom: none;
 }
 
-#results-list li:hover {
+.__bookmark__launcher__result__item__:hover {
   background-color: #f5f5f5;
 }
 
-#results-list li.selected {
+.__bookmark__launcher__result__item__.__bookmark__launcher__selected__ {
   background-color: #e0e0e0;
 }
 
-#results-list li .title {
+.__bookmark__launcher__title__ {
   font-size: 16px;
   font-weight: bold;
-  color: #333;
+  color: #333333;
   margin-bottom: 4px;
+  text-align: left;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
-#results-list li .url {
+.__bookmark__launcher__url__ {
   font-size: 12px;
-  color: #888;
+  color: #888888;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-align: left;
 }
 
-.no-results {
-  color: #888;
+.__bookmark__launcher__no__results__ {
+  color: #888888;
   font-style: italic;
   text-align: center;
   padding: 20px;
