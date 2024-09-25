@@ -27,7 +27,7 @@ This extension was developed using Cursor AI, demonstrating the potential of AI-
 
 ## Contributions
 
-Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](link-to-issues-page) if you want to contribute.
+Contributions, issues, and feature requests are welcome! Feel free to check the [issues page]([link-to-issues-page](https://github.com/KrabsWong/bookmark-launcher/issues)) if you want to contribute.
 
 ## License
 
