@@ -31,7 +31,7 @@ Contributions, issues, and feature requests are welcome! Feel free to check the 
 
 ## License
 
-[MIT](link-to-license-file)
+[MIT]([link-to-license-file](https://github.com/KrabsWong/bookmark-launcher/blob/main/LICENSE))
 
 ## Acknowledgements
 
