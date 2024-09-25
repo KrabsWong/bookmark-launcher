@@ -9,7 +9,7 @@ function injectContentScript(tabId) {
 
     chrome.scripting.executeScript({
       target: { tabId: tabId },
-      files: ['content.js']
+      files: ['src/content.js']
     }).then(() => {
       openBookmarkSearch(tabId);
     }).catch(error => console.error("Error injecting script:", error));
